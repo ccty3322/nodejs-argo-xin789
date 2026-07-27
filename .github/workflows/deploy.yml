@@ -14,12 +14,14 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Cloud Foundry CLI
-        uses: cloudfoundry-community/setup-cf-cli@v1
+        run: |
+          wget -q -O cf-cli.deb https://packages.cloudfoundry.org/stable?release=debian64&source=github
+          sudo dpkg -i cf-cli.deb
 
       - name: Login anynines
         run: |
           cf api https://api.sg.a9s.eu
-          cf auth ${{ secrets.CF_USERNAME }} ${{ secrets.CF_PASSWORD }}
+          cf auth "${{ secrets.CF_USERNAME }}" "${{ secrets.CF_PASSWORD }}"
 
       - name: Deploy
         run: |

@@ -11,10 +11,12 @@ jobs:
 
     steps:
 
+      # 获取代码
       - name: Checkout code
         uses: actions/checkout@v4
 
 
+      # 安装 Cloud Foundry CLI
       - name: Install Cloud Foundry CLI
         run: |
           mkdir -p $HOME/cf-bin
@@ -31,12 +33,14 @@ jobs:
           ./cf version
 
 
+      # 登录 anynines 德国区
       - name: Login anynines
         run: |
-          cf api https://api.sg.a9s.eu
+          cf api https://api.de.a9s.eu
           cf auth "${{ secrets.CF_USERNAME }}" "${{ secrets.CF_PASSWORD }}"
 
 
-      - name: Deploy
+      # 部署应用
+      - name: Deploy application
         run: |
           cf push

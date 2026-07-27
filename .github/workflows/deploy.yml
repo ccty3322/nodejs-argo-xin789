@@ -1,4 +1,26 @@
-nodejs-argo-xin789
- └── .github
-      └── workflows
-            └── deploy.yml
+name: Deploy to anynines
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Cloud Foundry CLI
+        uses: cloudfoundry-community/setup-cf-cli@v1
+
+      - name: Login anynines
+        run: |
+          cf api https://api.sg.a9s.eu
+          cf auth ${{ secrets.CF_USERNAME }} ${{ secrets.CF_PASSWORD }}
+
+      - name: Deploy
+        run: |
+          cf push

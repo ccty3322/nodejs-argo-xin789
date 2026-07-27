@@ -11,7 +11,7 @@ jobs:
 
     steps:
 
-      # 获取代码
+      # 拉取代码
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -33,14 +33,30 @@ jobs:
           ./cf version
 
 
-      # 登录 anynines 德国区
+      # 登录 anynines
       - name: Login anynines
         run: |
           cf api https://api.de.a9s.eu
           cf auth "${{ secrets.CF_USERNAME }}" "${{ secrets.CF_PASSWORD }}"
 
 
-      # 部署应用
+      # 自动选择 Org 和 Space
+      - name: Target Org
+        run: |
+          echo "===== 当前目标 ====="
+          cf target
+
+          echo "===== Org列表 ====="
+          cf orgs
+
+          ORG=$(cf orgs | grep -v "Getting orgs" | grep -v "name" | grep -v "^$" | head -n 1)
+
+          echo "选择 Org: $ORG"
+
+          cf target -o "$ORG"
+
+
+      # 部署 Node.js
       - name: Deploy application
         run: |
           cf push

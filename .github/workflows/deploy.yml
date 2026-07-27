@@ -17,12 +17,18 @@ jobs:
 
       - name: Install Cloud Foundry CLI
         run: |
-          sudo rm -f /usr/local/bin/cf
+          mkdir -p $HOME/cf-bin
+          cd $HOME/cf-bin
+
           wget -q "https://packages.cloudfoundry.org/stable?release=linux64-binary" -O cf.tgz
+
           tar -xzf cf.tgz
-          sudo mv cf /usr/local/bin/cf
-          sudo chmod +x /usr/local/bin/cf
-          cf version
+
+          chmod +x cf
+
+          echo "$HOME/cf-bin" >> $GITHUB_PATH
+
+          ./cf version
 
 
       - name: Login anynines

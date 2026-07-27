@@ -11,29 +11,26 @@ jobs:
 
     steps:
 
-      # 拉取 GitHub 仓库代码
       - name: Checkout code
         uses: actions/checkout@v4
 
 
-      # 安装 Cloud Foundry CLI
       - name: Install Cloud Foundry CLI
         run: |
-          wget -q https://packages.cloudfoundry.org/stable?release=linux64-binary -O cf.tgz
+          sudo rm -f /usr/local/bin/cf
+          wget -q "https://packages.cloudfoundry.org/stable?release=linux64-binary" -O cf.tgz
           tar -xzf cf.tgz
           sudo mv cf /usr/local/bin/cf
           sudo chmod +x /usr/local/bin/cf
           cf version
 
 
-      # 登录 anynines
       - name: Login anynines
         run: |
           cf api https://api.sg.a9s.eu
           cf auth "${{ secrets.CF_USERNAME }}" "${{ secrets.CF_PASSWORD }}"
 
 
-      # 部署 Node.js 应用
-      - name: Deploy application
+      - name: Deploy
         run: |
           cf push

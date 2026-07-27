@@ -11,7 +11,7 @@ jobs:
 
     steps:
 
-      # 拉取代码
+      # 拉取 GitHub 代码
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -41,22 +41,45 @@ jobs:
 
 
       # 自动选择 Org 和 Space
-      - name: Target Org
+      - name: Select Org and Space
         run: |
-          echo "===== 当前目标 ====="
+
+          echo "========== 当前用户 =========="
           cf target
 
-          echo "===== Org列表 ====="
+
+          echo "========== 获取 Org =========="
+
           cf orgs
 
           ORG=$(cf orgs | grep -v "Getting orgs" | grep -v "name" | grep -v "^$" | head -n 1)
 
-          echo "选择 Org: $ORG"
+          echo "使用 Org: $ORG"
+
 
           cf target -o "$ORG"
 
 
-      # 部署 Node.js
+          echo "========== 获取 Space =========="
+
+          cf spaces
+
+
+          SPACE=$(cf spaces | grep -v "Getting spaces" | grep -v "name" | grep -v "^$" | head -n 1)
+
+
+          echo "使用 Space: $SPACE"
+
+
+          cf target -s "$SPACE"
+
+
+          echo "========== 最终目标 =========="
+
+          cf target
+
+
+      # 部署应用
       - name: Deploy application
         run: |
           cf push
